@@ -22,6 +22,7 @@ from UM.Signal import Signal, signalemitter
 from UM.Resources import Resources
 from UM.Logger import Logger
 from UM.Preferences import Preferences
+from UM.VersionUpgradeManager import VersionUpgradeManager
 from UM.i18n import i18nCatalog
 
 from UM.Settings.ContainerRegistry import ContainerRegistry
@@ -91,6 +92,10 @@ class QtApplication(QApplication, Application):
         self.parseCommandLine()
         Logger.log("i", "Command line arguments: %s", self._parsed_command_line)
         self._plugin_registry.checkRequiredPlugins(self.getRequiredPlugins())
+
+        self.showSplashMessage(i18n_catalog.i18nc("@info:progress", "Updating preferences..."))
+        self.version_upgrade_manager = VersionUpgradeManager()
+        self.version_upgrade_manager.upgrade()
 
         self.showSplashMessage(i18n_catalog.i18nc("@info:progress", "Loading machines..."))
 
