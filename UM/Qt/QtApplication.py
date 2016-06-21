@@ -24,6 +24,9 @@ from UM.Logger import Logger
 from UM.Preferences import Preferences
 from UM.VersionUpgradeManager import VersionUpgradeManager
 from UM.i18n import i18nCatalog
+import UM.Settings.InstanceContainer #For version upgrade to know the version number.
+import UM.Settings.ContainerStack #For version upgrade to know the version number.
+import UM.Preferences #For version upgrade to know the version number.
 
 from UM.Settings.ContainerRegistry import ContainerRegistry
 
@@ -94,6 +97,13 @@ class QtApplication(QApplication, Application):
         self._plugin_registry.checkRequiredPlugins(self.getRequiredPlugins())
 
         self.showSplashMessage(i18n_catalog.i18nc("@info:progress", "Updating configuration..."))
+        self._version_upgrade_manager = VersionUpgradeManager(
+            {
+                "instance_container": UM.Settings.InstanceContainer.Version,
+                "container_stack": UM.Settings.ContainerStack.Version,
+                "preferences": UM.Preferences.PreferencesVersion
+            }
+        )
         self._version_upgrade_manager.upgrade()
 
         self.showSplashMessage(i18n_catalog.i18nc("@info:progress", "Loading machines..."))
